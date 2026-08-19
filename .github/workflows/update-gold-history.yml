@@ -16,128 +16,80 @@ jobs:
   update-history:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Build 7-day gold history
         shell: bash
         run: |
           python - <<'PY'
-          import csv
-          import io
-          import json
-          import urllib.request
+          import json, urllib.request
           from datetime import datetime, timedelta, timezone
 
-          def get_text(url):
-              req = urllib.request.Request(url, headers={'User-Agent': 'gold-price-history/1.0'})
-              with urllib.request.urlopen(req, timeout=25) as r:
-                  return r.read().decode('utf-8')
-
           def get_json(url):
-              return json.loads(get_text(url))
+              req = urllib.request.Request(url, headers={'User-Agent':'appsbysam-gold-price/1.0'})
+              with urllib.request.urlopen(req, timeout=25) as r:
+                  return json.loads(r.read().decode('utf-8'))
 
           today = datetime.now(timezone.utc).date()
-          start = today - timedelta(days=16)
+          start = today - timedelta(days=14)
 
-          # Historical XAU/USD daily closes from Stooq.
-          d1 = start.strftime('%Y%m%d')
-          d2 = today.strftime('%Y%m%d')
-          stooq_urls = [
-              f'https://stooq.com/q/d/l/?s=xauusd&i=d&d1={d1}&d2={d2}',
-              f'https://stooq.pl/q/d/l/?s=xauusd&i=d&d1={d1}&d2={d2}',
-          ]
-          gold_by_date = {}
-          last_error = None
-          for url in stooq_urls:
+          # XAUS provides keyless daily XAU/USD history (up to five years).
+          hist = get_json('https://xaus.com/api/v1/history')
+          gold = {}
+          for point in hist.get('points', []):
+              d = point.get('d')
+              c = point.get('c')
               try:
-                  text = get_text(url)
-                  reader = csv.DictReader(io.StringIO(text))
-                  for row in reader:
-                      date = (row.get('Date') or '').strip()
-                      close = (row.get('Close') or '').strip()
-                      if date and close:
-                          try:
-                              gold_by_date[date] = float(close)
-                          except ValueError:
-                              pass
-                  if gold_by_date:
-                      break
-              except Exception as exc:
-                  last_error = exc
+                  if d and c is not None:
+                      gold[d] = float(c)
+              except (TypeError, ValueError):
+                  pass
 
-          if not gold_by_date:
-              raise RuntimeError(f'Could not retrieve historical gold data: {last_error}')
-
-          # Always use the same live gold source as the web app for today's figure.
+          # Use the app's existing live source for today's intraday quote when available.
           try:
-              live_gold = get_json('https://api.gold-api.com/price/XAU')
-              current_gold = float(live_gold['price'])
-              gold_by_date[today.isoformat()] = current_gold
+              live = get_json('https://api.gold-api.com/price/XAU')
+              gold[today.isoformat()] = float(live['price'])
           except Exception:
-              # If live gold is temporarily unavailable, the latest market close remains usable.
               pass
 
-          # Historical USD/AUD rates from Frankfurter.
-          fx_url = (
+          fx_rows = get_json(
               'https://api.frankfurter.dev/v2/rates?base=USD&quotes=AUD'
               f'&from={start.isoformat()}&to={today.isoformat()}'
           )
-          fx_data = get_json(fx_url)
-          fx_by_date = {}
-          for row in fx_data:
+          fx = {}
+          for row in fx_rows:
               try:
                   if row.get('quote') == 'AUD':
-                      fx_by_date[row['date']] = float(row['rate'])
+                      fx[row['date']] = float(row['rate'])
               except (KeyError, TypeError, ValueError):
                   pass
-
-          # Make sure today's conversion is as fresh as possible.
           try:
               live_fx = get_json('https://api.frankfurter.dev/v2/rate/USD/AUD')
-              fx_by_date[today.isoformat()] = float(live_fx['rate'])
+              fx[today.isoformat()] = float(live_fx['rate'])
           except Exception:
               pass
 
-          if not fx_by_date:
-              raise RuntimeError('Could not retrieve USD/AUD exchange-rate history')
+          def latest(values, day):
+              choices=[]
+              for ds,val in values.items():
+                  try: d=datetime.strptime(ds,'%Y-%m-%d').date()
+                  except ValueError: continue
+                  if d <= day: choices.append((d,val))
+              return max(choices, key=lambda x:x[0])[1] if choices else None
 
-          def latest_on_or_before(values, target):
-              candidates = []
-              for date_str, value in values.items():
-                  try:
-                      d = datetime.strptime(date_str, '%Y-%m-%d').date()
-                  except ValueError:
-                      continue
-                  if d <= target:
-                      candidates.append((d, value))
-              if not candidates:
-                  return None
-              candidates.sort(key=lambda x: x[0])
-              return candidates[-1][1]
-
-          prices = []
+          prices=[]
           for offset in range(7):
-              day = today - timedelta(days=offset)
-              usd = latest_on_or_before(gold_by_date, day)
-              fx = latest_on_or_before(fx_by_date, day)
-              if usd is None or fx is None:
-                  continue
-              prices.append({
-                  'date': day.isoformat(),
-                  'usd_oz': round(usd, 2),
-                  'aud_oz': round(usd * fx, 2),
-                  'usd_aud': round(fx, 6),
-              })
+              day=today-timedelta(days=offset)
+              usd=latest(gold,day)
+              rate=latest(fx,day)
+              if usd is None or rate is None: continue
+              prices.append({'date':day.isoformat(),'usd_oz':round(usd,2),'aud_oz':round(usd*rate,2),'usd_aud':round(rate,6)})
 
-          payload = {
-              'generated_at': datetime.now(timezone.utc).isoformat(),
-              'prices': prices,
-              'note': 'Seven calendar days. Non-trading days carry forward the most recent available market close.'
-          }
+          if not prices:
+              raise RuntimeError('No historical prices could be assembled')
 
-          with open('history.json', 'w', encoding='utf-8') as f:
-              json.dump(payload, f, indent=2)
+          with open('history.json','w',encoding='utf-8') as f:
+              json.dump({'generated_at':datetime.now(timezone.utc).isoformat(),'prices':prices,'note':'Seven calendar days; non-trading days carry forward the latest available market close.'},f,indent=2)
               f.write('\n')
           PY
 
