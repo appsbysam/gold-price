@@ -1,0 +1,79 @@
+name: Apply history feature
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-history-feature.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore app and add history modal
+        shell: bash
+        run: |
+          curl -fsSL 'https://raw.githubusercontent.com/appsbysam/gold-price/90a552517144d484ff778f3dffe499dfcc1a5461/index.html' -o index.html
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          css='''
+              .history-btn { width:100%; margin-top:10px; background:var(--panel2); color:var(--gold); border:1px solid var(--border); }
+              .modal-backdrop { position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.72); backdrop-filter:blur(4px); }
+              .modal-backdrop.open { display:flex; }
+              .modal { width:min(620px,100%); max-height:86vh; overflow:auto; background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:16px; box-shadow:0 20px 60px rgba(0,0,0,.45); }
+              .modal-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+              .modal-head h2 { margin:0; font-size:1.2rem; }
+              .modal-close { width:38px; height:38px; padding:0; border-radius:50%; background:var(--panel2); color:var(--text); border:1px solid var(--border); font-size:1.35rem; }
+              .history-status { color:var(--muted); font-size:.85rem; margin:4px 0 12px; }
+          '''
+          s=s.replace('\n  </style>', css+'\n  </style>',1)
+          s=s.replace('''      <button class="refresh" id="refreshBtn">Refresh live prices</button>\n      <div id="status" class="status">Loading live prices…</div>''','''      <button class="refresh" id="refreshBtn">Refresh live prices</button>\n      <button class="history-btn" id="historyBtn">Retrieve prices for the last 7 days</button>\n      <div id="status" class="status">Loading live prices…</div>''',1)
+          modal='''
+            <div class="modal-backdrop" id="historyModal" aria-hidden="true">
+              <div class="modal" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+                <div class="modal-head"><h2 id="historyTitle">Gold Price — Last 7 Days</h2><button class="modal-close" id="historyCloseBtn" aria-label="Close">×</button></div>
+                <div class="history-status" id="historyStatus">Retrieving prices…</div>
+                <table><thead><tr><th>Date</th><th>🇺🇸 USD / oz</th><th>🇦🇺 AUD / oz</th></tr></thead><tbody id="historyBody"></tbody></table>
+                <div class="small">Seven calendar days including today. On non-trading days, the most recent available market close is carried forward.</div>
+              </div>
+            </div>
+          '''
+          s=s.replace('\n  <script>',modal+'\n  <script>',1)
+          js='''
+              function openHistoryModal() {
+                const modal=el('historyModal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; loadHistory();
+              }
+              function closeHistoryModal() {
+                const modal=el('historyModal'); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+              }
+              async function loadHistory() {
+                const body=el('historyBody'), status=el('historyStatus'); body.innerHTML=''; status.textContent='Retrieving prices…';
+                try {
+                  const r=await fetch(`history.json?t=${Date.now()}`,{cache:'no-store'}); if(!r.ok) throw new Error('History unavailable');
+                  const data=await r.json(), rows=Array.isArray(data?.prices)?data.prices:[]; if(!rows.length) throw new Error('No history');
+                  const today=new Date().toISOString().slice(0,10);
+                  body.innerHTML=rows.slice(0,7).map(row=>{ const d=new Date(`${row.date}T12:00:00Z`); const label=d.toLocaleDateString('en-AU',{weekday:'short',day:'2-digit',month:'short'})+(row.date===today?' · Today':''); return `<tr${row.date===today?' class="highlight"':''}><td>${label}</td><td>${money(Number(row.usd_oz),'USD')}</td><td>${money(Number(row.aud_oz),'AUD')}</td></tr>`; }).join('');
+                  let updated=''; if(data.generated_at){ const dt=new Date(data.generated_at); if(!Number.isNaN(dt.getTime())) updated=` · updated ${dt.toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'numeric',minute:'2-digit'})}`; }
+                  status.textContent=`Most recent 7-day gold history${updated}`;
+                } catch(err) { console.error(err); status.textContent='Historical prices are being prepared. Please try again shortly.'; body.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--muted);">History temporarily unavailable</td></tr>'; }
+              }
+          '''
+          s=s.replace('    async function refresh() {',js+'\n    async function refresh() {',1)
+          s=s.replace("    el('refreshBtn').addEventListener('click', refresh);\n", "    el('refreshBtn').addEventListener('click', refresh);\n    el('historyBtn').addEventListener('click', openHistoryModal);\n    el('historyCloseBtn').addEventListener('click', closeHistoryModal);\n    el('historyModal').addEventListener('click', e => { if(e.target===el('historyModal')) closeHistoryModal(); });\n    document.addEventListener('keydown', e => { if(e.key==='Escape' && el('historyModal').classList.contains('open')) closeHistoryModal(); });\n",1)
+          p.write_text(s)
+          PY
+      - name: Commit repaired app
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add 7-day gold price history modal"
+          git push
