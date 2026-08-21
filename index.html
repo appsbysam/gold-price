@@ -519,23 +519,72 @@
       return rate;
     }
 
-
     function openHistoryModal() {
-      const modal=el('historyModal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; loadHistory();
+      const modal = el('historyModal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      loadHistory();
     }
+
     function closeHistoryModal() {
-      const modal=el('historyModal'); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+      const modal = el('historyModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
     }
+
     async function loadHistory() {
-      const body=el('historyBody'), status=el('historyStatus'); body.innerHTML=''; status.textContent='Retrieving prices…';
+      const body = el('historyBody');
+      const status = el('historyStatus');
+      body.innerHTML = '';
+      status.textContent = 'Retrieving prices…';
+
       try {
-        const r=await fetch(`history.json?t=${Date.now()}`,{cache:'no-store'}); if(!r.ok) throw new Error('History unavailable');
-        const data=await r.json(), rows=Array.isArray(data?.prices)?data.prices:[]; if(!rows.length) throw new Error('No history');
-        const today=new Date().toISOString().slice(0,10);
-        body.innerHTML=rows.slice(0,7).map(row=>{ const d=new Date(`${row.date}T12:00:00Z`); const label=d.toLocaleDateString('en-AU',{weekday:'short',day:'2-digit',month:'short'})+(row.date===today?' · Today':''); return `<tr${row.date===today?' class="highlight"':''}><td>${label}</td><td>${money(Number(row.usd_oz),'USD')}</td><td>${money(Number(row.aud_oz),'AUD')}</td></tr>`; }).join('');
-        let updated=''; if(data.generated_at){ const dt=new Date(data.generated_at); if(!Number.isNaN(dt.getTime())) updated=` · updated ${dt.toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'numeric',minute:'2-digit'})}`; }
-        status.textContent=`Most recent 7-day gold history${updated}`;
-      } catch(err) { console.error(err); status.textContent='Historical prices are being prepared. Please try again shortly.'; body.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--muted);">History temporarily unavailable</td></tr>'; }
+        const r = await fetch(`history.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!r.ok) throw new Error('History file unavailable');
+        const data = await r.json();
+        const rows = Array.isArray(data?.prices) ? data.prices : [];
+        if (!rows.length) throw new Error('No history available');
+
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+        body.innerHTML = rows.slice(0, 7).map(row => {
+          const isToday = row.date === today;
+          const d = new Date(`${row.date}T12:00:00`);
+          const label = d.toLocaleDateString('en-AU', {
+            weekday: 'short', day: '2-digit', month: 'short'
+          }) + (isToday ? ' · Today' : '');
+
+          // Today's history row must match the live figures currently shown on the app.
+          // Older days continue to use the stored historical closes in history.json.
+          const usdOz = isToday && Number.isFinite(goldUsdOz)
+            ? goldUsdOz
+            : Number(row.usd_oz);
+          const audOz = isToday && Number.isFinite(goldUsdOz) && Number.isFinite(usdAud)
+            ? goldUsdOz * usdAud
+            : Number(row.aud_oz);
+
+          return `<tr${isToday ? ' class="highlight"' : ''}>` +
+            `<td>${label}</td>` +
+            `<td>${money(usdOz, 'USD')}</td>` +
+            `<td>${money(audOz, 'AUD')}</td>` +
+            `</tr>`;
+        }).join('');
+
+        let updated = '';
+        if (data.generated_at) {
+          const dt = new Date(data.generated_at);
+          if (!Number.isNaN(dt.getTime())) {
+            updated = ` · updated ${dt.toLocaleString('en-AU', { day:'2-digit', month:'short', hour:'numeric', minute:'2-digit' })}`;
+          }
+        }
+        status.textContent = `Most recent 7-day gold history${updated}`;
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Historical prices are being prepared. Please try again shortly.';
+        body.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--muted);">History temporarily unavailable</td></tr>`;
+      }
     }
 
     async function refresh() {
@@ -598,10 +647,6 @@
     el('calculateBtn').addEventListener('click', render);
     el('grams').addEventListener('input', render);
     el('refreshBtn').addEventListener('click', refresh);
-    el('historyBtn').addEventListener('click', openHistoryModal);
-    el('historyCloseBtn').addEventListener('click', closeHistoryModal);
-    el('historyModal').addEventListener('click', e => { if(e.target===el('historyModal')) closeHistoryModal(); });
-    document.addEventListener('keydown', e => { if(e.key==='Escape' && el('historyModal').classList.contains('open')) closeHistoryModal(); });
 
     el('manualBtn').addEventListener('click', () => {
       const g = Number(el('manualGold').value);
@@ -615,7 +660,6 @@
       render();
       setStatus('Manual values applied.', 'good');
     });
-
 
 
     el('saveFactorBtn').addEventListener('click', () => {
@@ -656,6 +700,15 @@
         `Temporarily calibrated from ${money(offer, 'USD')}/g → ${(factor * 100).toFixed(2)}% of 18K melt. It will reset on refresh.`,
         'good'
       );
+    });
+
+    el('historyBtn').addEventListener('click', openHistoryModal);
+    el('historyCloseBtn').addEventListener('click', closeHistoryModal);
+    el('historyModal').addEventListener('click', (e) => {
+      if (e.target === el('historyModal')) closeHistoryModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeHistoryModal();
     });
 
     refresh();
