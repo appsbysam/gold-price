@@ -25,149 +25,46 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       padding: 18px;
     }
-    .app {
-      width: min(680px, 100%);
-      margin: 0 auto;
-    }
-    .hero {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin: 8px 0 18px;
-    }
-    .coin {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--gold);
-      color: #17120a;
-      font-weight: 900;
-      font-size: 25px;
-      box-shadow: 0 0 0 5px rgba(242,193,78,.12);
-    }
-    h1 {
-      margin: 0;
-      font-size: 1.65rem;
-      line-height: 1.1;
-    }
-    .subtitle {
-      color: var(--muted);
-      margin-top: 5px;
-      font-size: .92rem;
-    }
-    .card {
-      background: rgba(23,26,33,.96);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-    }
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: end;
-    }
-    label {
-      color: var(--muted);
-      font-size: .82rem;
-      display: block;
-      margin-bottom: 7px;
-    }
-    input {
-      width: 100%;
-      border: 1px solid var(--border);
-      background: var(--panel2);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 13px 14px;
-      font-size: 1rem;
-      outline: none;
-    }
+    .app { width: min(680px, 100%); margin: 0 auto; }
+    .hero { display: flex; gap: 12px; align-items: center; margin: 8px 0 18px; }
+    .coin { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: #17120a; font-weight: 900; font-size: 25px; box-shadow: 0 0 0 5px rgba(242,193,78,.12); }
+    h1 { margin: 0; font-size: 1.65rem; line-height: 1.1; }
+    .subtitle { color: var(--muted); margin-top: 5px; font-size: .92rem; }
+    .card { background: rgba(23,26,33,.96); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+    .controls { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+    label { color: var(--muted); font-size: .82rem; display: block; margin-bottom: 7px; }
+    input { width: 100%; border: 1px solid var(--border); background: var(--panel2); color: var(--text); border-radius: 12px; padding: 13px 14px; font-size: 1rem; outline: none; }
     input:focus { border-color: var(--gold); }
-    button {
-      border: 0;
-      border-radius: 12px;
-      padding: 13px 16px;
-      background: var(--gold);
-      color: #19140a;
-      font-weight: 800;
-      font-size: .95rem;
-      cursor: pointer;
-    }
+    button { border: 0; border-radius: 12px; padding: 13px 16px; background: var(--gold); color: #19140a; font-weight: 800; font-size: .95rem; cursor: pointer; }
     button:active { transform: translateY(1px); }
-    .refresh {
-      width: 100%;
-      margin-top: 10px;
-    }
-    .status {
-      color: var(--muted);
-      font-size: .84rem;
-      margin-top: 10px;
-      min-height: 20px;
-    }
+    .refresh { width: 100%; margin-top: 10px; }
+    .status { color: var(--muted); font-size: .84rem; margin-top: 10px; min-height: 20px; }
     .status.good { color: var(--good); }
     .status.bad { color: var(--danger); }
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-    }
-    th, td {
-      padding: 14px 12px;
-      border-bottom: 1px solid var(--border);
-      text-align: right;
-    }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; }
+    th, td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: right; }
     th:first-child, td:first-child { text-align: left; }
-    th {
-      background: var(--panel2);
-      color: var(--muted);
-      font-size: .83rem;
-    }
-    td {
-      font-weight: 700;
-      font-size: .98rem;
-    }
+    th { background: var(--panel2); color: var(--muted); font-size: .83rem; }
+    td { font-weight: 700; font-size: .98rem; }
     tr:last-child td { border-bottom: 0; }
-    .highlight td {
-      background: rgba(242,193,78,.07);
-      color: #fff7d6;
-    }
-    .fx {
-      display: grid;
-      gap: 8px;
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: .93rem;
-    }
+    .highlight td { background: rgba(242,193,78,.07); color: #fff7d6; }
+    .fx { display: grid; gap: 8px; margin-top: 14px; color: var(--muted); font-size: .93rem; }
     .fx strong { color: var(--text); }
-    details {
-      margin-top: 12px;
-      color: var(--muted);
-    }
-    summary {
-      cursor: pointer;
-      color: var(--gold);
-      font-weight: 700;
-    }
-    .manual {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .small {
-      font-size: .77rem;
-      color: var(--muted);
-      line-height: 1.45;
-      margin-top: 12px;
-    }
+    details { margin-top: 12px; color: var(--muted); }
+    summary { cursor: pointer; color: var(--gold); font-weight: 700; }
+    .manual { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .small { font-size: .77rem; color: var(--muted); line-height: 1.45; margin-top: 12px; }
+    .section-title { margin: 0 0 6px; font-size: 1.1rem; }
+    .section-copy { margin: 0 0 14px; color: var(--muted); font-size: .87rem; line-height: 1.45; }
+    .big-value { font-size: 1.25rem; font-weight: 900; }
+    .history-btn { width: 100%; margin-top: 10px; background: var(--panel2); color: var(--gold); border: 1px solid var(--border); }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,.72); backdrop-filter: blur(4px); }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(620px, 100%); max-height: 86vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .modal-head h2 { margin: 0; font-size: 1.2rem; }
+    .modal-close { width: 38px; height: 38px; padding: 0; border-radius: 50%; background: var(--panel2); color: var(--text); border: 1px solid var(--border); font-size: 1.35rem; }
+    .history-status { color: var(--muted); font-size: .85rem; margin: 4px 0 12px; }
     @media (max-width: 520px) {
       body { padding: 12px; }
       .controls { grid-template-columns: 1fr; }
@@ -175,57 +72,6 @@
       th, td { padding: 12px 9px; font-size: .9rem; }
       button { width: 100%; }
     }
-
-    .section-title {
-      margin: 0 0 6px;
-      font-size: 1.1rem;
-    }
-    .section-copy {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: .87rem;
-      line-height: 1.45;
-    }
-    select {
-      width: 100%;
-      border: 1px solid var(--border);
-      background: var(--panel2);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 13px 14px;
-      font-size: 1rem;
-      outline: none;
-    }
-    select:focus { border-color: var(--gold); }
-    .sell-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .big-value {
-      font-size: 1.25rem;
-      font-weight: 900;
-    }
-    .comparison {
-      margin-top: 10px;
-      font-size: .86rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    @media (max-width: 520px) {
-      .sell-grid { grid-template-columns: 1fr; }
-    }
-
-    .history-btn { width:100%; margin-top:10px; background:var(--panel2); color:var(--gold); border:1px solid var(--border); }
-    .modal-backdrop { position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.72); backdrop-filter:blur(4px); }
-    .modal-backdrop.open { display:flex; }
-    .modal { width:min(620px,100%); max-height:86vh; overflow:auto; background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:16px; box-shadow:0 20px 60px rgba(0,0,0,.45); }
-    .modal-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
-    .modal-head h2 { margin:0; font-size:1.2rem; }
-    .modal-close { width:38px; height:38px; padding:0; border-radius:50%; background:var(--panel2); color:var(--text); border:1px solid var(--border); font-size:1.35rem; }
-    .history-status { color:var(--muted); font-size:.85rem; margin:4px 0 12px; }
-
   </style>
 </head>
 <body>
@@ -253,29 +99,11 @@
 
     <section class="card">
       <table>
-        <thead>
-          <tr>
-            <th>Gold</th>
-            <th>🇺🇸 USD</th>
-            <th>🇦🇺 AUD</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Gold</th><th>🇺🇸 USD</th><th>🇦🇺 AUD</th></tr></thead>
         <tbody>
-          <tr>
-            <td>1 troy oz</td>
-            <td id="ozUsd">—</td>
-            <td id="ozAud">—</td>
-          </tr>
-          <tr>
-            <td>1 gram</td>
-            <td id="gUsd">—</td>
-            <td id="gAud">—</td>
-          </tr>
-          <tr id="customWeightRow" class="highlight" style="display:none;">
-            <td id="customLabel">Entered weight</td>
-            <td id="customUsd">—</td>
-            <td id="customAud">—</td>
-          </tr>
+          <tr><td>1 troy oz</td><td id="ozUsd">—</td><td id="ozAud">—</td></tr>
+          <tr><td>1 gram</td><td id="gUsd">—</td><td id="gAud">—</td></tr>
+          <tr id="customWeightRow" class="highlight" style="display:none;"><td id="customLabel">Entered weight</td><td id="customUsd">—</td><td id="customAud">—</td></tr>
         </tbody>
       </table>
 
@@ -287,86 +115,39 @@
       <details>
         <summary>Manual price override</summary>
         <div class="manual">
-          <div>
-            <label for="manualGold">Gold price USD / oz</label>
-            <input id="manualGold" type="number" min="0" step="0.01" placeholder="e.g. 4393.50" />
-          </div>
-          <div>
-            <label for="manualFx">USD → AUD rate</label>
-            <input id="manualFx" type="number" min="0" step="0.0001" placeholder="e.g. 1.4075" />
-          </div>
+          <div><label for="manualGold">Gold price USD / oz</label><input id="manualGold" type="number" min="0" step="0.01" placeholder="e.g. 4393.50" /></div>
+          <div><label for="manualFx">USD → AUD rate</label><input id="manualFx" type="number" min="0" step="0.0001" placeholder="e.g. 1.4075" /></div>
         </div>
         <button class="refresh" id="manualBtn">Use manual values</button>
       </details>
 
-      <div class="small">
-        Gold uses the live XAU spot feed from Gold-API. USD/AUD uses Frankfurter's latest published rate.
-        One troy ounce = 31.1034768 grams. Spot prices are indicative and may differ from dealer buy/sell prices.
-      </div>
+      <div class="small">Gold uses the live XAU spot feed from Gold-API. USD/AUD uses Frankfurter's latest published rate. One troy ounce = 31.1034768 grams. Spot prices are indicative and may differ from dealer buy/sell prices.</div>
     </section>
 
     <section class="card">
       <h2 class="section-title">🇱🇧 Lebanon 18K Market Estimate</h2>
-      <p class="section-copy">
-        Lebanese 18K reference rates calculated from the same live international gold price used above.
-      </p>
-
+      <p class="section-copy">Lebanese 18K reference rates calculated from the same live international gold price used above.</p>
       <table>
-        <thead>
-          <tr>
-            <th>18K gold</th>
-            <th>🇺🇸 USD</th>
-            <th>🇦🇺 AUD</th>
-          </tr>
-        </thead>
+        <thead><tr><th>18K gold</th><th>🇺🇸 USD</th><th>🇦🇺 AUD</th></tr></thead>
         <tbody>
-          <tr>
-            <td>Sell to jeweller / gram</td>
-            <td id="lebSellPerGramUsd">—</td>
-            <td id="lebSellPerGramAud">—</td>
-          </tr>
-          <tr>
-            <td>Buy from jeweller / gram</td>
-            <td id="lebBuyPerGramUsd">—</td>
-            <td id="lebBuyPerGramAud">—</td>
-          </tr>
-          <tr id="lebSellTotalRow" class="highlight" style="display:none;">
-            <td id="lebSellTotalLabel">Sell entered weight</td>
-            <td class="big-value" id="lebSellTotalUsd">—</td>
-            <td class="big-value" id="lebSellTotalAud">—</td>
-          </tr>
-          <tr id="lebBuyTotalRow" class="highlight" style="display:none;">
-            <td id="lebBuyTotalLabel">Buy entered weight</td>
-            <td class="big-value" id="lebBuyTotalUsd">—</td>
-            <td class="big-value" id="lebBuyTotalAud">—</td>
-          </tr>
+          <tr><td>Sell to jeweller / gram</td><td id="lebSellPerGramUsd">—</td><td id="lebSellPerGramAud">—</td></tr>
+          <tr><td>Buy from jeweller / gram</td><td id="lebBuyPerGramUsd">—</td><td id="lebBuyPerGramAud">—</td></tr>
+          <tr id="lebSellTotalRow" class="highlight" style="display:none;"><td id="lebSellTotalLabel">Sell entered weight</td><td class="big-value" id="lebSellTotalUsd">—</td><td class="big-value" id="lebSellTotalAud">—</td></tr>
+          <tr id="lebBuyTotalRow" class="highlight" style="display:none;"><td id="lebBuyTotalLabel">Buy entered weight</td><td class="big-value" id="lebBuyTotalUsd">—</td><td class="big-value" id="lebBuyTotalAud">—</td></tr>
         </tbody>
       </table>
-
-      <div class="small" id="lebSourceStatus">
-        Lebanon used-jewellery estimate calibrated to a real jeweller offer.
-      </div>
-
+      <div class="small" id="lebSourceStatus">Lebanon used-jewellery estimate calibrated to a real jeweller offer.</div>
       <details style="margin-top:12px;">
         <summary>Adjust Lebanon jeweller factor</summary>
         <div class="manual">
-          <div>
-            <label for="jewellerFactor">Jeweller pays % of 18K melt</label>
-            <input id="jewellerFactor" type="number" min="80" max="100" step="0.01" value="92.95" inputmode="decimal" />
-          </div>
-          <div>
-            <label for="realOffer">Or enter a real offer ($/g)</label>
-            <input id="realOffer" type="number" min="0" step="0.01" placeholder="e.g. 99.00" inputmode="decimal" />
-          </div>
+          <div><label for="jewellerFactor">Jeweller pays % of 18K melt</label><input id="jewellerFactor" type="number" min="80" max="100" step="0.01" value="92.95" inputmode="decimal" /></div>
+          <div><label for="realOffer">Or enter a real offer ($/g)</label><input id="realOffer" type="number" min="0" step="0.01" placeholder="e.g. 99.00" inputmode="decimal" /></div>
         </div>
         <button class="refresh" id="saveFactorBtn">Apply temporary factor</button>
         <button class="refresh" id="calibrateOfferBtn">Temporarily calibrate</button>
       </details>
-      <div class="small">
-        Reference only. Actual jeweller rates can vary with quantity, testing, workmanship and market movement.
-      </div>
+      <div class="small">Reference only. Actual jeweller rates can vary with quantity, testing, workmanship and market movement.</div>
     </section>
-
   </main>
 
   <div class="modal-backdrop" id="historyModal" aria-hidden="true">
@@ -383,124 +164,80 @@
     let goldUsdOz = null;
     let usdAud = null;
     let liveUpdatedAt = null;
-
     const el = id => document.getElementById(id);
 
     const money = (value, currency) => {
       if (!Number.isFinite(value)) return '—';
-      return new Intl.NumberFormat('en-AU', {
-        style: 'currency',
-        currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(value);
+      return new Intl.NumberFormat('en-AU', { style: 'currency', currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
     };
 
     function render() {
       if (!Number.isFinite(goldUsdOz) || !Number.isFinite(usdAud)) return;
-
       const goldAudOz = goldUsdOz * usdAud;
       const usdGram = goldUsdOz / TROY_OZ_GRAMS;
       const audGram = goldAudOz / TROY_OZ_GRAMS;
-
       el('ozUsd').textContent = money(goldUsdOz, 'USD');
       el('ozAud').textContent = money(goldAudOz, 'AUD');
       el('gUsd').textContent = money(usdGram, 'USD');
       el('gAud').textContent = money(audGram, 'AUD');
-
       const raw = el('grams').value.trim();
       const grams = Number(raw);
       const hasWeight = raw !== '' && Number.isFinite(grams) && grams > 0;
-
       el('customWeightRow').style.display = hasWeight ? '' : 'none';
-
       if (hasWeight) {
-        el('customLabel').textContent =
-          `${grams.toLocaleString('en-AU', {maximumFractionDigits: 2})} grams`;
+        el('customLabel').textContent = `${grams.toLocaleString('en-AU', {maximumFractionDigits: 2})} grams`;
         el('customUsd').textContent = money(usdGram * grams, 'USD');
         el('customAud').textContent = money(audGram * grams, 'AUD');
       }
-
       el('usdToAud').textContent = `US$1 = A$${usdAud.toFixed(4)}`;
       el('audToUsd').textContent = `A$1 = US$${(1 / usdAud).toFixed(4)}`;
       renderLebanon();
     }
 
-
-    // Lebanon used-jewellery model.
-    // Default calibration: a real offer of US$99/g on 17 Aug 2026 when
-    // 18K theoretical melt was about US$106.51/g -> jeweller factor ≈ 92.95%.
     const DEFAULT_JEWELLER_FACTOR = 0.9295;
     let currentJewellerFactor = DEFAULT_JEWELLER_FACTOR;
-
-    function getJewellerFactor() {
-      return currentJewellerFactor;
-    }
-
+    function getJewellerFactor() { return currentJewellerFactor; }
     function resetJewellerFactor() {
       currentJewellerFactor = DEFAULT_JEWELLER_FACTOR;
-
       const factorInput = el('jewellerFactor');
       if (factorInput) factorInput.value = (DEFAULT_JEWELLER_FACTOR * 100).toFixed(2);
-
       const realOfferInput = el('realOffer');
       if (realOfferInput) realOfferInput.value = '';
     }
 
     function renderLebanon() {
       if (!Number.isFinite(goldUsdOz) || !Number.isFinite(usdAud)) return;
-
       const pure24kUsdGram = goldUsdOz / TROY_OZ_GRAMS;
       const melt18kUsdGram = pure24kUsdGram * 0.75;
-
       const jewellerFactor = getJewellerFactor();
-
-      // "Sell to jeweller" = realistic used-jewellery cash offer.
       const sellUsdGram = melt18kUsdGram * jewellerFactor;
-
-      // "Buy from jeweller" remains a metal-value reference only.
-      // Actual jewellery retail prices can be higher due to workmanship/design.
       const buyUsdGram = melt18kUsdGram * 1.03;
-
       el('lebSellPerGramUsd').textContent = money(sellUsdGram, 'USD');
       el('lebSellPerGramAud').textContent = money(sellUsdGram * usdAud, 'AUD');
       el('lebBuyPerGramUsd').textContent = money(buyUsdGram, 'USD');
       el('lebBuyPerGramAud').textContent = money(buyUsdGram * usdAud, 'AUD');
-
       const pct = (jewellerFactor * 100).toFixed(2);
       const deductionPct = ((1 - jewellerFactor) * 100).toFixed(2);
-      el('lebSourceStatus').textContent =
-        `Used-jewellery sell estimate: ${pct}% of 18K melt (${deductionPct}% jeweller/refining deduction).`;
-
+      el('lebSourceStatus').textContent = `Used-jewellery sell estimate: ${pct}% of 18K melt (${deductionPct}% jeweller/refining deduction).`;
       const factorInput = el('jewellerFactor');
-      if (factorInput && document.activeElement !== factorInput) {
-        factorInput.value = (jewellerFactor * 100).toFixed(2);
-      }
-
+      if (factorInput && document.activeElement !== factorInput) factorInput.value = (jewellerFactor * 100).toFixed(2);
       const raw = el('grams').value.trim();
       const grams = Number(raw);
       const hasWeight = raw !== '' && Number.isFinite(grams) && grams > 0;
-
       el('lebSellTotalRow').style.display = hasWeight ? '' : 'none';
       el('lebBuyTotalRow').style.display = hasWeight ? '' : 'none';
-
       if (hasWeight) {
         const gramsLabel = grams.toLocaleString('en-AU', { maximumFractionDigits: 2 });
-
         el('lebSellTotalLabel').textContent = `Sell ${gramsLabel} g of 18K`;
         el('lebSellTotalUsd').textContent = money(sellUsdGram * grams, 'USD');
         el('lebSellTotalAud').textContent = money(sellUsdGram * grams * usdAud, 'AUD');
-
         el('lebBuyTotalLabel').textContent = `Buy ${gramsLabel} g of 18K`;
         el('lebBuyTotalUsd').textContent = money(buyUsdGram * grams, 'USD');
         el('lebBuyTotalAud').textContent = money(buyUsdGram * grams * usdAud, 'AUD');
       }
     }
 
-    function setStatus(message, type = '') {
-      el('status').textContent = message;
-      el('status').className = `status ${type}`;
-    }
+    function setStatus(message, type = '') { el('status').textContent = message; el('status').className = `status ${type}`; }
 
     async function fetchGold() {
       const r = await fetch('https://api.gold-api.com/price/XAU', { cache: 'no-store' });
@@ -525,34 +262,21 @@
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-
-      const status = el('historyStatus');
-      status.textContent = 'Syncing today with live price…';
-
-      // Fetch one fresh gold + FX snapshot first, then use that exact same
-      // snapshot on both the main screen and today's history row.
+      el('historyStatus').textContent = 'Syncing today with live price…';
       try {
         const [gold, fx] = await Promise.all([fetchGold(), fetchFx()]);
         goldUsdOz = gold;
         usdAud = fx;
         liveUpdatedAt = new Date();
-
         localStorage.setItem('goldUsdOz', String(goldUsdOz));
         localStorage.setItem('usdAud', String(usdAud));
         localStorage.setItem('pricesSavedAt', liveUpdatedAt.toISOString());
-
         render();
-
-        const stamp = liveUpdatedAt.toLocaleString('en-AU', {
-          day: '2-digit', month: 'short', year: 'numeric',
-          hour: 'numeric', minute: '2-digit', second: '2-digit'
-        });
+        const stamp = liveUpdatedAt.toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' });
         setStatus(`Live prices updated ${stamp}`, 'good');
       } catch (err) {
         console.error('Could not re-sync live price for history', err);
-        // If the live request fails, keep the most recently displayed values.
       }
-
       loadHistory();
     }
 
@@ -568,44 +292,24 @@
       const status = el('historyStatus');
       body.innerHTML = '';
       status.textContent = 'Retrieving prices…';
-
       try {
         const r = await fetch(`history.json?t=${Date.now()}`, { cache: 'no-store' });
         if (!r.ok) throw new Error('History file unavailable');
         const data = await r.json();
         const rows = Array.isArray(data?.prices) ? data.prices : [];
         if (!rows.length) throw new Error('No history available');
-
         const now = new Date();
         const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
         body.innerHTML = rows.slice(0, 7).map(row => {
           const isToday = row.date === today;
           const d = new Date(`${row.date}T12:00:00`);
-          const label = d.toLocaleDateString('en-AU', {
-            weekday: 'short', day: '2-digit', month: 'short'
-          }) + (isToday ? ' · Today' : '');
-
-          // Today's history row must match the live figures currently shown on the app.
-          // Older days continue to use the stored historical closes in history.json.
-          const usdOz = isToday && Number.isFinite(goldUsdOz)
-            ? goldUsdOz
-            : Number(row.usd_oz);
-          const audOz = isToday && Number.isFinite(goldUsdOz) && Number.isFinite(usdAud)
-            ? goldUsdOz * usdAud
-            : Number(row.aud_oz);
-
-          return `<tr${isToday ? ' class="highlight"' : ''}>` +
-            `<td>${label}</td>` +
-            `<td>${money(usdOz, 'USD')}</td>` +
-            `<td>${money(audOz, 'AUD')}</td>` +
-            `</tr>`;
+          const label = d.toLocaleDateString('en-AU', { weekday: 'short', day: '2-digit', month: 'short' }) + (isToday ? ' · Today' : '');
+          const usdOz = isToday && Number.isFinite(goldUsdOz) ? goldUsdOz : Number(row.usd_oz);
+          const audOz = isToday && Number.isFinite(goldUsdOz) && Number.isFinite(usdAud) ? goldUsdOz * usdAud : Number(row.aud_oz);
+          return `<tr${isToday ? ' class="highlight"' : ''}><td>${label}</td><td>${money(usdOz, 'USD')}</td><td>${money(audOz, 'AUD')}</td></tr>`;
         }).join('');
-
         if (liveUpdatedAt) {
-          const stamp = liveUpdatedAt.toLocaleString('en-AU', {
-            day:'2-digit', month:'short',
-            hour:'numeric', minute:'2-digit', second:'2-digit'
-          });
+          const stamp = liveUpdatedAt.toLocaleString('en-AU', { day:'2-digit', month:'short', hour:'numeric', minute:'2-digit', second:'2-digit' });
           status.textContent = `Today synced to live price · ${stamp}`;
         } else {
           status.textContent = 'Today uses the current live price shown on the main screen';
@@ -626,49 +330,29 @@
         goldUsdOz = gold;
         usdAud = fx;
         liveUpdatedAt = new Date();
-
-        // Save latest successful values locally for resilience.
         localStorage.setItem('goldUsdOz', String(goldUsdOz));
         localStorage.setItem('usdAud', String(usdAud));
-        localStorage.setItem('pricesSavedAt', new Date().toISOString());
-
+        localStorage.setItem('pricesSavedAt', liveUpdatedAt.toISOString());
         render();
-
-        const now = new Date().toLocaleString('en-AU', {
-          day: '2-digit', month: 'short', year: 'numeric',
-          hour: 'numeric', minute: '2-digit'
-        });
+        const now = liveUpdatedAt.toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' });
         setStatus(`Live prices updated ${now}`, 'good');
       } catch (err) {
         console.error(err);
-
-        // Fall back to the most recent successful prices stored on this device.
         const cachedGold = Number(localStorage.getItem('goldUsdOz'));
         const cachedFx = Number(localStorage.getItem('usdAud'));
         const cachedAt = localStorage.getItem('pricesSavedAt');
-
-        if (Number.isFinite(cachedGold) && cachedGold > 0 &&
-            Number.isFinite(cachedFx) && cachedFx > 0) {
+        if (Number.isFinite(cachedGold) && cachedGold > 0 && Number.isFinite(cachedFx) && cachedFx > 0) {
           goldUsdOz = cachedGold;
           usdAud = cachedFx;
           render();
-
           let when = 'previously saved';
           if (cachedAt) {
             const d = new Date(cachedAt);
-            if (!Number.isNaN(d.getTime())) {
-              when = d.toLocaleString('en-AU', {
-                day: '2-digit', month: 'short', year: 'numeric',
-                hour: 'numeric', minute: '2-digit'
-              });
-            }
+            if (!Number.isNaN(d.getTime())) when = d.toLocaleString('en-AU', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' });
           }
           setStatus(`Live feed unavailable — showing last saved prices from ${when}.`, 'bad');
         } else {
-          setStatus(
-            'Could not load live prices. Open “Manual price override” below to enter gold and FX values.',
-            'bad'
-          );
+          setStatus('Could not load live prices. Open “Manual price override” below to enter gold and FX values.', 'bad');
         }
       } finally {
         el('refreshBtn').disabled = false;
@@ -678,68 +362,40 @@
     el('calculateBtn').addEventListener('click', render);
     el('grams').addEventListener('input', render);
     el('refreshBtn').addEventListener('click', refresh);
+    el('historyBtn').addEventListener('click', openHistoryModal);
+    el('historyCloseBtn').addEventListener('click', closeHistoryModal);
+    el('historyModal').addEventListener('click', e => { if (e.target === el('historyModal')) closeHistoryModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && el('historyModal').classList.contains('open')) closeHistoryModal(); });
 
     el('manualBtn').addEventListener('click', () => {
       const g = Number(el('manualGold').value);
       const f = Number(el('manualFx').value);
-      if (!(g > 0) || !(f > 0)) {
-        setStatus('Enter both a valid gold price and USD→AUD rate.', 'bad');
-        return;
-      }
+      if (!(g > 0) || !(f > 0)) { setStatus('Enter both a valid gold price and USD→AUD rate.', 'bad'); return; }
       goldUsdOz = g;
       usdAud = f;
       render();
       setStatus('Manual values applied.', 'good');
     });
 
-
     el('saveFactorBtn').addEventListener('click', () => {
       const pct = Number(el('jewellerFactor').value);
-      if (!Number.isFinite(pct) || pct < 80 || pct > 100) {
-        setStatus('Enter a jeweller factor between 80% and 100%.', 'bad');
-        return;
-      }
+      if (!Number.isFinite(pct) || pct < 80 || pct > 100) { setStatus('Enter a jeweller factor between 80% and 100%.', 'bad'); return; }
       currentJewellerFactor = pct / 100;
       renderLebanon();
       setStatus(`Temporary jeweller factor set to ${pct.toFixed(2)}%. It will reset on refresh.`, 'good');
     });
 
     el('calibrateOfferBtn').addEventListener('click', () => {
-      if (!Number.isFinite(goldUsdOz)) {
-        setStatus('Live gold price must be available before calibrating.', 'bad');
-        return;
-      }
-
+      if (!Number.isFinite(goldUsdOz)) { setStatus('Live gold price must be available before calibrating.', 'bad'); return; }
       const offer = Number(el('realOffer').value);
-      if (!Number.isFinite(offer) || offer <= 0) {
-        setStatus('Enter a valid real jeweller offer per gram.', 'bad');
-        return;
-      }
-
+      if (!Number.isFinite(offer) || offer <= 0) { setStatus('Enter a valid real jeweller offer per gram.', 'bad'); return; }
       const melt18k = (goldUsdOz / TROY_OZ_GRAMS) * 0.75;
       const factor = offer / melt18k;
-
-      if (factor < 0.80 || factor > 1.00) {
-        setStatus('That offer produces an unusual factor. Check the entered $/g amount.', 'bad');
-        return;
-      }
-
+      if (factor < 0.80 || factor > 1.00) { setStatus('That offer produces an unusual factor. Check the entered $/g amount.', 'bad'); return; }
       currentJewellerFactor = factor;
       el('jewellerFactor').value = (factor * 100).toFixed(2);
       renderLebanon();
-      setStatus(
-        `Temporarily calibrated from ${money(offer, 'USD')}/g → ${(factor * 100).toFixed(2)}% of 18K melt. It will reset on refresh.`,
-        'good'
-      );
-    });
-
-    el('historyBtn').addEventListener('click', openHistoryModal);
-    el('historyCloseBtn').addEventListener('click', closeHistoryModal);
-    el('historyModal').addEventListener('click', (e) => {
-      if (e.target === el('historyModal')) closeHistoryModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeHistoryModal();
+      setStatus(`Temporarily calibrated from ${money(offer, 'USD')}/g → ${(factor * 100).toFixed(2)}% of 18K melt. It will reset on refresh.`, 'good');
     });
 
     refresh();
