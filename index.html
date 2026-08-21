@@ -382,6 +382,7 @@
     const TROY_OZ_GRAMS = 31.1034768;
     let goldUsdOz = null;
     let usdAud = null;
+    let liveUpdatedAt = null;
 
     const el = id => document.getElementById(id);
 
@@ -519,11 +520,39 @@
       return rate;
     }
 
-    function openHistoryModal() {
+    async function openHistoryModal() {
       const modal = el('historyModal');
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+
+      const status = el('historyStatus');
+      status.textContent = 'Syncing today with live price…';
+
+      // Fetch one fresh gold + FX snapshot first, then use that exact same
+      // snapshot on both the main screen and today's history row.
+      try {
+        const [gold, fx] = await Promise.all([fetchGold(), fetchFx()]);
+        goldUsdOz = gold;
+        usdAud = fx;
+        liveUpdatedAt = new Date();
+
+        localStorage.setItem('goldUsdOz', String(goldUsdOz));
+        localStorage.setItem('usdAud', String(usdAud));
+        localStorage.setItem('pricesSavedAt', liveUpdatedAt.toISOString());
+
+        render();
+
+        const stamp = liveUpdatedAt.toLocaleString('en-AU', {
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: 'numeric', minute: '2-digit', second: '2-digit'
+        });
+        setStatus(`Live prices updated ${stamp}`, 'good');
+      } catch (err) {
+        console.error('Could not re-sync live price for history', err);
+        // If the live request fails, keep the most recently displayed values.
+      }
+
       loadHistory();
     }
 
@@ -572,14 +601,15 @@
             `</tr>`;
         }).join('');
 
-        let updated = '';
-        if (data.generated_at) {
-          const dt = new Date(data.generated_at);
-          if (!Number.isNaN(dt.getTime())) {
-            updated = ` · updated ${dt.toLocaleString('en-AU', { day:'2-digit', month:'short', hour:'numeric', minute:'2-digit' })}`;
-          }
+        if (liveUpdatedAt) {
+          const stamp = liveUpdatedAt.toLocaleString('en-AU', {
+            day:'2-digit', month:'short',
+            hour:'numeric', minute:'2-digit', second:'2-digit'
+          });
+          status.textContent = `Today synced to live price · ${stamp}`;
+        } else {
+          status.textContent = 'Today uses the current live price shown on the main screen';
         }
-        status.textContent = `Most recent 7-day gold history${updated}`;
       } catch (err) {
         console.error(err);
         status.textContent = 'Historical prices are being prepared. Please try again shortly.';
@@ -595,6 +625,7 @@
         const [gold, fx] = await Promise.all([fetchGold(), fetchFx()]);
         goldUsdOz = gold;
         usdAud = fx;
+        liveUpdatedAt = new Date();
 
         // Save latest successful values locally for resilience.
         localStorage.setItem('goldUsdOz', String(goldUsdOz));
