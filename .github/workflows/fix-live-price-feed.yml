@@ -1,0 +1,34 @@
+name: Fix live price feed
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-live-price-feed.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore working FX endpoint
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old_url = "https://api.frankfurter.app/latest?from=USD&to=AUD"
+          new_url = "https://api.frankfurter.dev/v2/rate/USD/AUD"
+          if old_url not in s:
+              raise SystemExit('Expected broken FX endpoint was not found')
+          s = s.replace(old_url, new_url)
+          s = s.replace("usdAud=Number(fx.rates?.AUD);", "usdAud=Number(fx.rate);")
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Restore working live FX price feed'
+          git push
