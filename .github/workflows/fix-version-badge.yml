@@ -1,0 +1,38 @@
+name: Fix version badge
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-version-badge.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Anchor version badge on mobile
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='.hero{display:flex;gap:12px;align-items:center;margin:8px 0 18px}'
+          new='.hero{position:relative;display:flex;gap:12px;align-items:center;margin:8px 0 18px;padding-right:72px}'
+          if old not in s:
+              raise SystemExit('hero style not found')
+          s=s.replace(old,new,1)
+          old2='.version{margin-left:auto;align-self:flex-start;margin-top:5px;color:var(--muted);font-size:.78rem;font-weight:700;white-space:nowrap}'
+          new2='.version{position:absolute;right:0;top:5px;color:var(--gold);font-size:.78rem;font-weight:800;white-space:nowrap}'
+          if old2 not in s:
+              raise SystemExit('version style not found')
+          s=s.replace(old2,new2,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Fix Version 1.1 badge on mobile header'
+          git push
