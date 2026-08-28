@@ -1,0 +1,91 @@
+name: Restore history live sync
+on:
+  push:
+    paths:
+      - '.github/workflows/restore-history-live-sync.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore live sync and timestamp in 7-day history
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          pattern = r"async function showHistory\(\)\{.*?\}\nel\('calculateBtn'\)"
+          replacement = r'''async function showHistory(){
+            el('historyModal').classList.add('open');
+            el('historyModal').setAttribute('aria-hidden','false');
+            el('historyStatus').textContent='Syncing today with live price…';
+            el('historyBody').innerHTML='';
+            try{
+              const[gRes,fRes]=await Promise.all([
+                fetch('https://api.gold-api.com/price/XAU',{cache:'no-store'}),
+                fetch('https://api.frankfurter.dev/v2/rate/USD/AUD',{cache:'no-store'})
+              ]);
+              if(!gRes.ok||!fRes.ok)throw new Error('Live feed unavailable');
+              const g=await gRes.json(),f=await fRes.json();
+              goldUsdOz=Number(g.price);
+              usdAud=Number(f.rate);
+              if(!Number.isFinite(goldUsdOz)||!Number.isFinite(usdAud))throw new Error('Invalid live data');
+              liveUpdatedAt=new Date();
+              render();
+              el('status').className='status good';
+              el('status').textContent=`Live prices updated ${formatUpdateTime(liveUpdatedAt)}`;
+
+              const url=new URL('./history.json',window.location.href);
+              url.searchParams.set('v',Date.now());
+              const res=await fetch(url.toString(),{cache:'no-store',headers:{Accept:'application/json'}});
+              if(!res.ok)throw new Error(`History file returned ${res.status}`);
+              const data=await res.json();
+              const rows=Array.isArray(data)?data:(Array.isArray(data.prices)?data.prices:Array.isArray(data.history)?data.history:[]);
+              if(!rows.length)throw new Error('No history data found');
+              rows.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+
+              const now=new Date();
+              const today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
+              rows.slice(0,7).forEach(row=>{
+                const tr=document.createElement('tr');
+                const d=row.date||row.day||'';
+                const storedUsd=Number(row.usd_oz??row.usd??row.usdOz??row.price);
+                const storedAud=Number(row.aud_oz??row.aud??row.audOz);
+                const rowFx=Number(row.usd_aud??row.fx??usdAud);
+                const isToday=d===today;
+                let u=isToday?goldUsdOz:storedUsd;
+                let a=isToday?goldUsdOz*usdAud:storedAud;
+                if(!Number.isFinite(a)&&Number.isFinite(u)&&Number.isFinite(rowFx))a=u*rowFx;
+                if(isToday)tr.className='highlight';
+                const dateObj=new Date(d+'T12:00:00');
+                const dateLabel=Number.isNaN(dateObj.getTime())?d:dateObj.toLocaleDateString('en-AU',{weekday:'short',day:'2-digit',month:'short'});
+                tr.innerHTML=`<td>${dateLabel}${isToday?' · Today':''}</td><td>${money(u,'USD')}</td><td>${money(a,'AUD')}</td>`;
+                el('historyBody').appendChild(tr);
+              });
+
+              el('historyStatus').textContent=`Today synced to live price · ${formatUpdateTime(liveUpdatedAt)}`;
+            }catch(err){
+              el('historyStatus').textContent=`Could not retrieve history: ${err.message}`;
+            }
+          }
+el('calculateBtn')'''
+
+          s2, n = re.subn(pattern, replacement, s, flags=re.S)
+          if n != 1:
+              raise SystemExit(f'Expected one showHistory block, replaced {n}')
+          p.write_text(s2, encoding='utf-8')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Restore live sync and timestamp in 7-day history'
+          git push
