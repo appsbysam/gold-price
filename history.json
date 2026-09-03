@@ -1,11 +1,17 @@
 {
-  "generated_at": "2026-09-02T21:01:19.180981+00:00",
+  "generated_at": "2026-09-03T04:20:44.642281+00:00",
   "prices": [
     {
-      "date": "2026-09-02",
-      "usd_oz": 4389.0,
-      "aud_oz": 6143.72,
+      "date": "2026-09-03",
+      "usd_oz": 4432.0,
+      "aud_oz": 6203.91,
       "usd_aud": 1.3998
+    },
+    {
+      "date": "2026-09-02",
+      "usd_oz": 4348.0,
+      "aud_oz": 6086.77,
+      "usd_aud": 1.3999
     },
     {
       "date": "2026-09-01",
@@ -36,12 +42,6 @@
       "usd_oz": 4478.1,
       "aud_oz": 6232.62,
       "usd_aud": 1.3918
-    },
-    {
-      "date": "2026-08-27",
-      "usd_oz": 4609.7,
-      "aud_oz": 6422.7,
-      "usd_aud": 1.3933
     }
   ],
   "note": "Seven calendar days; non-trading days carry forward the latest available market close."
